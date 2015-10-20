@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    {% if title %}
+    <title>{{title}} - Performance Visualizer</title>
+    {% else %}
+    <title>Performance Visualizer</title>
+    {% endif %}
+    
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" media="screen">
+  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.css"/>
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    
+  <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.js"></script>
+  
+</head>
+<body>
+    <nav class="navbar navbar-default" role="navigation">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="{{url_for('.upload_file')}}">Home </a>
+    </div>
+    
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="{{url_for('.upload_file')}}">Upload New File</a></li>
+        <!--
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Products <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li> <a href="{{url_for('.upload_file')}}">The Smart Switch for the Line 6 DL4</a></li>
+          </ul>
+        </li>
+        -->
+      </ul>
+
+      
+      <ul class="nav navbar-nav navbar-right">
+
+        <li><img src="/static/img/logonavbar.png" id="navbar-logo" class="img-rounded"></li>
+      </ul>
+    </div>
+    
+    </nav>
+    
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+</body>
