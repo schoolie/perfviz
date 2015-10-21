@@ -1,6 +1,6 @@
 import os
 from flask import Flask, jsonify, Blueprint, render_template, \
-                  request, redirect, url_for, current_app, g
+                  request, redirect, url_for, current_app, g, Response
                   
 from flask.ext.cors import CORS
 from werkzeug import secure_filename
@@ -48,7 +48,7 @@ def get_data(filename):
             
         
         gps.create_df()    
-        gps.create_gdf()        
+        gps.create_geojson()        
         os.remove(filename)
         print 'file removed'
         
@@ -59,7 +59,9 @@ def get_data(filename):
         
         return jsonify({'error' : e})
         
-    return gps.gdf[0:].to_json()
+
+    return gps.geojson
+    # return response2
     
 @main.route('/visualizer/<filename>')
 def visualizer(filename):

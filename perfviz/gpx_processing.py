@@ -1,5 +1,5 @@
 import pandas as pd
-import geopandas as gpd
+import geojson
 
 import numpy as np
 from xml.dom import minidom
@@ -276,18 +276,35 @@ class GPSPlotter(object):
         
         return colors
         
-    def create_gdf(self):
-    
-        temp = self.df.apply(lambda row: Point(row['lon'], row['lat']), axis=1)
+    def create_geojson(self):
+        self.df['hr_colors'] = self.calc_colors(self.df.hr)
+        self.df['alt_colors'] = self.calc_colors(self.df.alt)
+        self.df['cad_colors'] = self.calc_colors(self.df.cad)
         
-        self.gdf = gpd.GeoDataFrame({'geometry': temp, 
-                                     'dist': self.df.dist,
-                                     'hr': self.df.hr,
-                                     'hr_color': self.calc_colors(self.df.hr),
-                                     'alt': self.df.alt,
-                                     'alt_color': self.calc_colors(self.df.alt),
-                                     'cad': self.df.cad,
-                                     'cad_color': self.calc_colors(self.df.cad)})
+        # Converting NaN to None for JSON serialization -- NEEDS CLEANUP
+        geo_df = self.df.copy()
+        geo_df = geo_df.where((pd.notnull(geo_df)), None)
+
+
+        #temp = self.df.apply(lambda row: geojson.Point([row['lon'], row['lat']]), axis=1)
+
+
+        feature_list = []
+        for row in geo_df.iterrows():
+            point = geojson.Point([row[1].lon, row[1].lat])
+            feature = geojson.Feature(geometry=point, properties={            
+                                             'dist': row[1].dist,
+                                             'hr': row[1].hr,
+                                             'hr_color': row[1].hr_colors,
+                                             'alt': row[1].alt,
+                                             'alt_color': row[1].alt_colors,
+                                             'cad': row[1].cad,
+                                             'cad_color': row[1].cad_colors
+                                            })
+            feature_list.append(feature)
+            
+        feature_collection = geojson.FeatureCollection(feature_list)
+        self.geojson = geojson.dumps(feature_collection, sort_keys=True)
         
     def create_plots(self):
         df = self.df
