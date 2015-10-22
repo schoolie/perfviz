@@ -6,16 +6,10 @@ from xml.dom import minidom
 import datetime
 from geopy.distance import distance
 import utm
-from bokeh.plotting import figure, vplot, ColumnDataSource
-from bokeh.models import HoverTool
-from collections import OrderedDict
 
 import dateutil
 
 import utm
-
-import folium
-from shapely.geometry import Point
 
 def xml_to_float(element):
     if element is not None:
@@ -196,7 +190,7 @@ class GPSPlotter(object):
         df = df[np.isfinite(df['lat'])]
         df = df[np.isfinite(df['lon'])]
         
-        df.time = df.time.astype('datetime64[s]')
+        # df.time = df.time.astype('datetime64[s]')
                 
         if np.sum(~pd.isnull(df.time)) > 0:
             df['dtime'] = diff_time_array(df.time) / np.timedelta64(1, 's')
@@ -283,12 +277,9 @@ class GPSPlotter(object):
         
         # Converting NaN to None for JSON serialization -- NEEDS CLEANUP
         geo_df = self.df.copy()
-        geo_df = geo_df.where((pd.notnull(geo_df)), None)
-
-
-        #temp = self.df.apply(lambda row: geojson.Point([row['lon'], row['lat']]), axis=1)
-
-
+        
+        geo_df = geo_df.fillna(0)
+        
         feature_list = []
         for row in geo_df.iterrows():
             point = geojson.Point([row[1].lon, row[1].lat])
@@ -304,7 +295,7 @@ class GPSPlotter(object):
             feature_list.append(feature)
             
         feature_collection = geojson.FeatureCollection(feature_list)
-        self.geojson = geojson.dumps(feature_collection, sort_keys=True)
+        self.geojson = geojson.dumps(feature_collection, sort_keys=True, allow_nan=True)
         
     def create_plots(self):
         df = self.df
