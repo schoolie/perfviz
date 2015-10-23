@@ -11,7 +11,8 @@ from config import config
 from gpx_processing import GPSPlotter
 
 main = Blueprint('main', __name__,
-                 template_folder='templates')
+                 template_folder='templates',
+                 static_folder='static')
 
 
     
@@ -63,8 +64,9 @@ def get_data(filename):
     return gps.geojson
     # return response2
     
-@main.route('/visualizer/<filename>')
-def visualizer(filename):
+@main.route('/visualizer')
+def visualizer():
+    filename = request.args.get('filename', 'Lap 1.tcx')
     return render_template('visualizer.html', filename=filename)
     # return render_template('testmap.html', filename=filename)
     
